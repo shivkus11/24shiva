@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#145744">
+  <title>Shree Gurudev Daat Clinic - Management</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <div class="brand">Shree Gurudev Daat Clinic</div>
+      <div class="subbrand">Dental Clinic Management System</div>
+    </div>
+    <div id="account-area" class="account-area hidden">
+      <span id="account-label"></span>
+      <button id="patient-register-shortcut" class="button button-light" type="button">Patient account registration</button>
+      <button id="logout-button" class="button button-light" type="button">Sign out</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section id="login-view" class="login-panel">
+      <h1>Sign in</h1>
+      <p class="muted">Clinic staff, doctors and patients can all sign in here. The correct dashboard opens automatically for your account.</p>
+      <form id="login-form" class="form-grid narrow">
+        <label>Email<input id="login-email" type="email" autocomplete="username" required></label>
+        <label>Password<input id="login-password" type="password" autocomplete="current-password" required></label>
+        <button class="button button-primary" type="submit">Sign in</button>
+        <p id="login-error" class="error"></p>
+      </form>
+      <div class="auth-switch auth-actions">
+        <span>New patient?</span>
+        <button id="show-register" class="button button-light" type="button">Create a patient account</button>
+      </div>
+      <section id="register-panel" class="register-panel hidden">
+        <h2>Patient registration</h2>
+        <p class="muted small">Register here to use the patient website and Android app with the same account. Use the email and phone number already given to the clinic to link an existing patient record.</p>
+        <form id="register-form" class="form-grid">
+          <label>Full name<input name="name" required maxlength="160" autocomplete="name"></label>
+          <label>Email<input name="email" type="email" required maxlength="255" autocomplete="email"></label>
+          <label>Phone<input name="phone" required maxlength="30" autocomplete="tel"></label>
+          <label>Password (at least 10 characters)<input name="password" type="password" required minlength="10" autocomplete="new-password"></label>
+          <label>Confirm password<input name="confirmPassword" type="password" required minlength="10" autocomplete="new-password"></label>
+          <button class="button button-primary" type="submit">Create patient account</button>
+          <p id="register-error" class="error"></p>
+          <p id="register-success" class="message"></p>
+        </form>
+        <p class="auth-switch">Already have an account? <button id="show-login" class="link-button" type="button">Sign in</button></p>
+      </section>
+    </section>
+
+    <section id="app-view" class="hidden">
+      <nav class="tabs" aria-label="Main navigation">
+        <button class="tab active" data-tab="overview">Overview</button>
+        <button class="tab" data-tab="patients">Patients</button>
+        <button class="tab" data-tab="appointments">Appointments</button>
+      </nav>
+
+      <section id="overview-tab" class="tab-content">
+        <h1>Clinic overview</h1>
+        <div class="stats-grid">
+          <article class="stat"><span>Total patients</span><strong id="stat-patients">-</strong></article>
+          <article class="stat"><span>Appointments today</span><strong id="stat-today">-</strong></article>
+          <article class="stat"><span>Pending appointments</span><strong id="stat-pending">-</strong></article>
+          <article class="stat"><span>Follow-ups due</span><strong id="stat-followups">-</strong></article>
+        </div>
+        <p class="muted">Use Patients to open a record, update medical history, enter treatment details and upload dental images.</p>
+      </section>
+
+      <section id="patients-tab" class="tab-content hidden">
+        <div class="section-heading">
+          <div><h1>Patients</h1><p class="muted">Search by name, patient ID or phone number.</p></div>
+          <button class="button button-primary" id="show-add-patient">Add patient</button>
+        </div>
+        <div id="add-patient-panel" class="panel hidden">
+          <h2>New patient record</h2>
+          <form id="add-patient-form" class="form-grid two-col">
+            <label>Full name<input name="fullName" required maxlength="160"></label>
+            <label>Phone<input name="phone" maxlength="30"></label>
+            <label>Email<input name="email" type="email"></label>
+            <label>Date of birth<input name="dateOfBirth" type="date"></label>
+            <label>Gender<input name="gender" maxlength="30"></label>
+            <label>Address<input name="address" maxlength="2000"></label>
+            <div class="form-actions"><button class="button button-primary" type="submit">Save patient</button><button class="button button-light" type="button" id="cancel-add-patient">Cancel</button></div>
+          </form>
+        </div>
+        <div class="toolbar"><input id="patient-search" placeholder="Search patient..." aria-label="Search patients"><button id="search-patients" class="button button-light">Search</button></div>
+        <div class="table-wrap"><table><thead><tr><th>Patient ID</th><th>Name</th><th>Phone</th><th>Email</th><th></th></tr></thead><tbody id="patients-body"><tr><td colspan="5">Sign in to load patients.</td></tr></tbody></table></div>
+      </section>
+
+      <section id="appointments-tab" class="tab-content hidden">
+        <h1>Appointments</h1>
+        <p class="muted">Review patient requests and update their status.</p>
+        <div class="table-wrap"><table><thead><tr><th>Date & time</th><th>Patient</th><th>Reason</th><th>Status</th><th>Update</th></tr></thead><tbody id="appointments-body"><tr><td colspan="5">No data loaded.</td></tr></tbody></table></div>
+      </section>
+
+      <section id="patient-detail" class="panel hidden">
+        <div class="section-heading">
+          <div><h1 id="detail-name">Patient record</h1><p id="detail-meta" class="muted"></p></div>
+          <button id="close-detail" class="button button-light">Back to patients</button>
+        </div>
+        <div class="detail-grid">
+          <section>
+            <h2>Medical history</h2>
+            <form id="history-form" class="form-grid">
+              <label>Allergies<textarea name="allergies" rows="2"></textarea></label>
+              <label>Medical conditions<textarea name="conditions" rows="2"></textarea></label>
+              <label>Current medications<textarea name="medications" rows="2"></textarea></label>
+              <label>Previous surgeries<textarea name="previousSurgeries" rows="2"></textarea></label>
+              <label>Other notes<textarea name="notes" rows="2"></textarea></label>
+              <button class="button button-primary" type="submit">Save medical history</button>
+            </form>
+          </section>
+          <section>
+            <h2>Add treatment</h2>
+            <form id="treatment-form" class="form-grid">
+              <label>Procedure<input name="procedureName" required></label>
+              <label>Tooth number<input name="toothNumber" placeholder="e.g. 16"></label>
+              <label>Diagnosis<textarea name="diagnosis" rows="2"></textarea></label>
+              <label>Treatment notes<textarea name="treatmentNotes" rows="2"></textarea></label>
+              <label>Charges (INR)<input name="charges" type="number" min="0" step="0.01" value="0"></label>
+              <button class="button button-primary" type="submit">Save treatment</button>
+            </form>
+          </section>
+        </div>
+        <section class="subsection">
+          <h2>Upload X-ray / photo / document to Cloudflare R2</h2>
+          <form id="upload-form" class="upload-row">
+            <select name="category" aria-label="File category"><option value="xray">X-ray</option><option value="photo">Dental photo</option><option value="document">Document</option></select>
+            <input name="file" type="file" accept="image/jpeg,image/png,image/webp,application/pdf" required>
+            <button class="button button-primary" type="submit">Upload file</button>
+          </form>
+          <p class="muted small">JPG, PNG, WEBP or PDF. Maximum 25 MB per file.</p>
+          <div id="files-list" class="record-list"></div>
+        </section>
+        <section class="subsection">
+          <h2>Treatment history</h2>
+          <div id="treatments-list" class="record-list"></div>
+        </section>
+        <section class="subsection">
+          <h2>Payments</h2>
+          <form id="payment-form" class="upload-row compact">
+            <input name="amount" type="number" min="0" step="0.01" placeholder="Amount (INR)" required>
+            <select name="status"><option value="pending">Pending</option><option value="paid">Paid</option><option value="partial">Partial</option><option value="refunded">Refunded</option></select>
+            <input name="paymentMethod" placeholder="Method (cash / UPI)">
+            <button class="button button-primary" type="submit">Add payment</button>
+          </form>
+          <div id="payments-list" class="record-list"></div>
+        </section>
+        <section class="subsection">
+          <h2>Treatment consent</h2>
+          <form id="consent-form" class="form-grid">
+            <label>Consent text<textarea name="consentText" rows="3" required placeholder="Write the treatment consent information for the patient."></textarea></label>
+            <button class="button button-primary" type="submit">Create consent form</button>
+          </form>
+          <div id="consents-list" class="record-list"></div>
+        </section>
+        <section class="subsection">
+          <h2>Follow-up</h2>
+          <form id="followup-form" class="upload-row compact">
+            <input name="dueAt" type="datetime-local" required>
+            <input name="notes" placeholder="Follow-up notes">
+            <button class="button button-primary" type="submit">Add follow-up</button>
+          </form>
+          <div id="followups-list" class="record-list"></div>
+        </section>
+        <section class="subsection">
+          <h2>Dental chart data</h2>
+          <label class="form-grid">Tooth chart JSON<textarea id="chart-json" rows="4" placeholder='{"upperRight":{},"upperLeft":{},"lowerLeft":{},"lowerRight":{}}'></textarea></label>
+          <button id="save-chart" class="button button-primary" type="button">Save dental chart</button>
+        </section>
+        <p id="detail-message" class="message"></p>
+      </section>
+    </section>
+
+    <section id="patient-app-view" class="hidden">
+      <div class="patient-welcome">
+        <div>
+          <h1>Patient portal</h1>
+          <p id="patient-welcome-line" class="muted">Your appointments and dental records in one place.</p>
+        </div>
+        <div class="patient-code" id="patient-code-label"></div>
+      </div>
+      <div class="stats-grid patient-stats">
+        <article class="stat"><span>Patient ID</span><strong id="patient-stat-id">-</strong></article>
+        <article class="stat"><span>Appointments</span><strong id="patient-stat-appointments">-</strong></article>
+        <article class="stat"><span>Pending consents</span><strong id="patient-stat-consents">-</strong></article>
+        <article class="stat"><span>Uploaded files</span><strong id="patient-stat-files">-</strong></article>
+      </div>
+
+      <section class="patient-section">
+        <h2>Request an appointment</h2>
+        <form id="patient-appointment-form" class="upload-row">
+          <label class="inline-field">Preferred date and time<input name="appointmentAt" type="datetime-local" required></label>
+          <label class="inline-field">Reason<input name="reason" placeholder="e.g. Tooth pain / regular check-up" maxlength="1000"></label>
+          <button class="button button-primary" type="submit">Send request</button>
+        </form>
+        <p id="patient-appointment-message" class="message"></p>
+      </section>
+
+      <section class="patient-section">
+        <h2>My appointments</h2>
+        <div id="patient-appointments" class="record-list"><p class="muted">Loading...</p></div>
+      </section>
+
+      <section class="patient-section">
+        <h2>My medical history</h2>
+        <div id="patient-history" class="patient-info-grid"><p class="muted">Loading...</p></div>
+      </section>
+
+      <section class="patient-section">
+        <h2>My treatment records</h2>
+        <div id="patient-treatments" class="record-list"><p class="muted">Loading...</p></div>
+      </section>
+
+      <section class="patient-section">
+        <h2>My X-rays, photos and documents</h2>
+        <form id="patient-upload-form" class="upload-row">
+          <select name="category" aria-label="File category"><option value="xray">X-ray</option><option value="photo">Dental photo</option><option value="document">Document</option></select>
+          <input name="file" type="file" accept="image/jpeg,image/png,image/webp,application/pdf" required>
+          <button class="button button-primary" type="submit">Upload file</button>
+        </form>
+        <p class="muted small">JPG, PNG, WEBP or PDF. Maximum 25 MB per file.</p>
+        <div id="patient-files" class="record-list"></div>
+        <p id="patient-upload-message" class="message"></p>
+      </section>
+
+      <section class="patient-section">
+        <h2>Payment status</h2>
+        <div id="patient-payments" class="record-list"><p class="muted">Loading...</p></div>
+      </section>
+
+      <section class="patient-section">
+        <h2>Treatment consent</h2>
+        <p class="muted small">Read each consent carefully. Contact the clinic if you have questions before responding.</p>
+        <div id="patient-consents" class="record-list"><p class="muted">Loading...</p></div>
+        <p id="patient-consent-message" class="message"></p>
+      </section>
+
+      <section class="patient-section">
+        <h2>Follow-up visits</h2>
+        <div id="patient-followups" class="record-list"><p class="muted">Loading...</p></div>
+      </section>
+    </section>
+  </main>
+  <footer>Shree Gurudev Daat Clinic · Dental Clinic Management System</footer>
+  <script src="/app.js" defer></script>
+</body>
+</html>
